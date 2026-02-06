@@ -1,6 +1,12 @@
 {% extends 'base/base.html' %}
 
+{% load static %}
+
 {% block title %}Login - Pinterest Clone{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container auth-container">

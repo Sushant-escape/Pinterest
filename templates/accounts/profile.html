@@ -1,6 +1,12 @@
 {% extends 'base/base.html' %}
 
+{% load static %}
+
 {% block title %}Profile - Pinterest Clone{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container profile-container">
