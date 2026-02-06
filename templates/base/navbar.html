@@ -1,0 +1,20 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <a href="{% url 'core:home' %}" class="logo">📌 Pinterest</a>
+        </div>
+        
+        <ul class="navbar-menu">
+            <li><a href="{% url 'core:home' %}">Home</a></li>
+            <li><a href="{% url 'core:explore' %}">Explore</a></li>
+            
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+                <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li><a href="{% url 'accounts:signup' %}">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
