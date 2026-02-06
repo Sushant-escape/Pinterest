@@ -9,7 +9,7 @@ from .models import User
 def signup_view(request):
     """Handle user registration"""
     if request.user.is_authenticated:
-        return redirect('profile')
+        return redirect('accounts:profile')
 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
@@ -45,7 +45,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                return redirect('profile')
+                return redirect('accounts:profile')
             else:
                 messages.error(request, 'Invalid username/email or password.')
     else:
@@ -61,7 +61,7 @@ def logout_view(request):
     return redirect('core:home')
 
 
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def profile_view(request):
     """Display user profile"""
     user = request.user
