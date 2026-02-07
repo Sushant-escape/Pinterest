@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="board-hero" style="text-align: center; padding: 40px 20px;">
+    <h1 class="board-name" style="font-size: 36px; margin-bottom: 10px;">{{ board.name }}</h1>
+    <p class="board-desc" style="color: #666; max-width: 600px; margin: 0 auto 20px;">{{ board.description|default:"No
+        description" }}</p>
+
+    <div class="board-meta" style="margin-bottom: 20px;">
+        <a href="{% url 'accounts:profile' %}" class="creator-chip"
+            style="text-decoration: none; color: black; font-weight: 600;">
+            {% if board.user.profile_image %}
+            <img src="{{ board.user.profile_image.url }}"
+                style="width: 32px; height: 32px; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
+            {% else %}
+            <div class="avatar-placeholder-tiny"
+                style="display: inline-block; width: 32px; height: 32px; background: #efefef; border-radius: 50%; text-align: center; line-height: 32px; margin-right: 8px;">
+                {{ board.user.username.0|upper }}
+            </div>
+            {% endif %}
+            <span>{{ board.user.username }}</span>
+        </a>
+    </div>
+
+    <div class="board-controls" style="display: flex; justify-content: center; gap: 10px;">
+        <button class="btn-icon" title="Share" onclick="copyBoardLink()"><i class="fas fa-share-alt"></i></button>
+        {% if is_owner %}
+        <a href="{% url 'boards:board_edit' board.id %}" class="btn-secondary"
+            style="text-decoration: none; background: #efefef; color: black; padding: 12px 20px; border-radius: 24px; font-weight: 600;">Edit
+            Board</a>
+        <a href="{% url 'boards:board_delete' board.id %}" class="btn-secondary"
+            style="text-decoration: none; background: #e60023; color: white; padding: 12px 20px; border-radius: 24px; font-weight: 600;">Delete
+            Board</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="content-section" style="padding: 20px;">
+    <div class="masonry-grid" style="column-count: 5; column-gap: 15px;">
+        {% for pin in pins %}
+        <div class="pin-card" style="break-inside: avoid; margin-bottom: 15px;">
+            <a href="{% url 'pins:pin_detail' pin.id %}" style="text-decoration: none;">
+                <img src="{{ pin.image.url }}" alt="{{ pin.title }}"
+                    style="width: 100%; border-radius: 16px; display: block;">
+                <div class="pin-overlay"></div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="empty-board" style="text-align: center; padding: 60px 20px;">
+            <h3 style="color: #666;">There are no Pins on this board yet</h3>
+            {% if is_owner %}
+            <a href="{% url 'pins:pin_create' %}" class="btn-primary"
+                style="display: inline-block; background: #e60023; color: white; padding: 12px 24px; border-radius: 24px; font-weight: 600; text-decoration: none; margin-top: 20px;">Create
+                Pin</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function copyBoardLink() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert("Board link copied to clipboard!");
+        });
+    }
+</script>
+{% endblock %}

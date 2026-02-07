@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block title %}Profile - Pinterest Clone{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            {% if user.profile_image %}
+                <img src="{{ user.profile_image.url }}" alt="Profile Picture" class="profile-picture">
+            {% else %}
+                <div class="profile-picture-placeholder">👤</div>
+            {% endif %}
+            
+            <div class="profile-info">
+                <h1>{{ user.first_name|default:user.username }}</h1>
+                <p class="username">@{{ user.username }}</p>
+                {% if user.bio %}
+                    <p class="bio">{{ user.bio }}</p>
+                {% endif %}
+                <p class="joined-date">Joined {{ user.created_at|date:"F d, Y" }}</p>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="#" class="btn btn-secondary">Edit Profile</a>
+            <a href="{% url 'accounts:logout' %}" class="btn btn-outline">Logout</a>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat">
+                <h3>0</h3>
+                <p>Pins</p>
+            </div>
+            <div class="stat">
+                <h3>0</h3>
+                <p>Boards</p>
+            </div>
+            <div class="stat">
+                <h3>0</h3>
+                <p>Followers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <h2>Your Pins</h2>
+        <div class="empty-state">
+            <p>You haven't created any pins yet.</p>
+            <a href="#" class="btn btn-primary">Create Your First Pin</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,138 @@
 /* Pins Page Styles */
+
+.pin-detail-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    z-index: 10;
+}
+
+.pin-back-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 5;
+    cursor: zoom-out;
+}
+
+.pin-detail-card {
+    background: white;
+    border-radius: 32px;
+    box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.pin-media {
+    flex: 1;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pin-media img {
+    max-width: 100%;
+    max-height: 85vh;
+    display: block;
+}
+
+.pin-info-panel {
+    width: 450px;
+    padding: 32px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+.pin-title {
+    font-size: 32px;
+    font-weight: 700;
+    /* Bold */
+    margin-bottom: 12px;
+    color: #111;
+}
+
+.pin-desc {
+    font-size: 16px;
+    color: #111;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.creator-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 32px 0;
+}
+
+.creator-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #efefef;
+    object-fit: cover;
+}
+
+.pin-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.creator-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.creator-name {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.follower-count {
+    font-weight: 400;
+    font-size: 14px;
+    color: #767676;
+}
+
+.comments-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #efefef;
+}
+
+.comments-section h4 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pin-link {
+    font-weight: 600;
+    text-decoration: underline;
+    color: #111;
+    font-size: 14px;
+}

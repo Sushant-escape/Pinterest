@@ -1,116 +1,26 @@
-{% extends 'base/base.html' %}
-
-{% load static %}
-
-{% block title %}Sign Up - Pinterest Clone{% endblock %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container auth-container">
+<div class="auth-wrapper">
     <div class="auth-card">
-        <div class="auth-header">
-            <h1>Create Account</h1>
-            <p>Join Pinterest and discover amazing ideas</p>
+        <div class="logo-center">
+            <i class="fas fa-layer-group fa-3x" style="color: #e60023;"></i>
         </div>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                    <button type="button" class="close">&times;</button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data" class="auth-form">
+        <h2>Sign up to Pinterest</h2>
+        <p>Find new ideas to try</p>
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
+            {% for field in form %}
             <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Username</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="form-error">
-                        {% for error in form.username.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-text">{{ field.errors }}</div>
                 {% endif %}
             </div>
-
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email Address</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <div class="form-error">
-                        {% for error in form.email.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">Password</label>
-                {{ form.password1 }}
-                {% if form.password1.errors %}
-                    <div class="form-error">
-                        {% for error in form.password1.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                <small class="help-text">
-                    • At least 8 characters<br>
-                    • Can't be entirely numeric<br>
-                    • Can't be too similar to your username
-                </small>
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-                {{ form.password2 }}
-                {% if form.password2.errors %}
-                    <div class="form-error">
-                        {% for error in form.password2.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.bio.id_for_label }}">Bio (Optional)</label>
-                {{ form.bio }}
-                {% if form.bio.errors %}
-                    <div class="form-error">
-                        {% for error in form.bio.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.profile_image.id_for_label }}">Profile Picture (Optional)</label>
-                {{ form.profile_image }}
-                {% if form.profile_image.errors %}
-                    <div class="form-error">
-                        {% for error in form.profile_image.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            {% endfor %}
+            <button type="submit" class="btn-primary full-width">Continue</button>
         </form>
-
-        <div class="auth-footer">
-            <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a></p>
-        </div>
+        <p class="auth-footer">Already a member? <a href="{% url 'accounts:login' %}">Log in</a></p>
     </div>
 </div>
 {% endblock %}

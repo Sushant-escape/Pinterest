@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>{% if action == 'Edit' %}Edit{% else %}Create{% endif %} Board</h3>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    {{ form.description }}
+                </div>
+                <div class="form-group checkbox-row">
+                    {{ form.is_private }}
+                    <label for="id_is_private" style="margin-bottom: 0; cursor: pointer;">Keep this board secret</label>
+                </div>
+                <p class="helper-text">Only you and collaborators can see this board.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-primary">
+                    {% if action == 'Edit' %}Save changes{% else %}Create board{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

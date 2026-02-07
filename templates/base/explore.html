@@ -1,17 +1,21 @@
-{% extends 'base/base.html' %}
-
-{% block title %}Explore - Pinterest Clone{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="explore-section">
-        <h1>Explore Pins</h1>
-        <p>Browse and discover amazing pins from the community</p>
-        
-        <div class="pins-grid">
-            <!-- Pins will be displayed here -->
-            <p>No pins available yet. Be the first to create one!</p>
+<div class="explore-container" style="padding: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Explore Inspiration</h2>
+    <div class="masonry-grid">
+        {% for pin in pins %}
+        <div class="pin-card">
+            <a href="{% url 'pins:pin_detail' pin.id %}">
+                <img src="{{ pin.image.url }}" alt="{{ pin.title }}">
+                <div class="pin-overlay"></div>
+            </a>
         </div>
+        {% empty %}
+        <div class="text-center" style="width: 100%;">
+            <p>No pins available to explore yet.</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -1,60 +1,154 @@
-{% extends 'base/base.html' %}
-
-{% load static %}
-
-{% block title %}Profile - Pinterest Clone{% endblock %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container profile-container">
-    <div class="profile-card">
-        <div class="profile-header">
-            {% if user.profile_image %}
-                <img src="{{ user.profile_image.url }}" alt="Profile Picture" class="profile-picture">
-            {% else %}
-                <div class="profile-picture-placeholder">👤</div>
-            {% endif %}
-            
-            <div class="profile-info">
-                <h1>{{ user.first_name|default:user.username }}</h1>
-                <p class="username">@{{ user.username }}</p>
-                {% if user.bio %}
-                    <p class="bio">{{ user.bio }}</p>
-                {% endif %}
-                <p class="joined-date">Joined {{ user.created_at|date:"F d, Y" }}</p>
-            </div>
-        </div>
+<div class="profile-header">
+    <div class="profile-image">
+        {% if user.profile_image %}
+        <img src="{{ user.profile_image.url }}" alt="{{ user.username }}">
+        {% else %}
+        <div class="avatar-placeholder">{{ user.username.0|upper }}</div>
+        {% endif %}
+    </div>
+    <h1>{{ user.first_name }} {{ user.last_name|default:user.username }}</h1>
+    <p class="username">@{{ user.username }}</p>
+    {% if user.bio %}
+    <p class="bio">{{ user.bio }}</p>
+    {% endif %}
 
-        <div class="profile-actions">
-            <a href="#" class="btn btn-secondary">Edit Profile</a>
-            <a href="{% url 'accounts:logout' %}" class="btn btn-outline">Logout</a>
-        </div>
-
-        <div class="profile-stats">
-            <div class="stat">
-                <h3>0</h3>
-                <p>Pins</p>
-            </div>
-            <div class="stat">
-                <h3>0</h3>
-                <p>Boards</p>
-            </div>
-            <div class="stat">
-                <h3>0</h3>
-                <p>Followers</p>
-            </div>
-        </div>
+    <div class="profile-stats">
+        <span><strong>{{ user.followers.count|default:"0" }}</strong> followers</span>
+        <span><strong>{{ user.following.count|default:"0" }}</strong> following</span>
     </div>
 
-    <div class="profile-content">
-        <h2>Your Pins</h2>
-        <div class="empty-state">
-            <p>You haven't created any pins yet.</p>
-            <a href="#" class="btn btn-primary">Create Your First Pin</a>
-        </div>
+    <div class="profile-actions">
+        <button onclick="copyProfileLink()" class="btn-secondary">Share</button>
+        {% if request.user == user %}
+        <a href="{% url 'accounts:profile_edit' %}" class="btn-secondary">Edit Profile</a>
+        <a href="{% url 'boards:board_create' %}" class="btn-secondary">Create Board</a>
+        {% endif %}
     </div>
 </div>
+
+<div class="profile-tabs" id="profileTabs">
+    <button class="tab active" onclick="switchTab('created')">Created</button>
+    <button class="tab" onclick="switchTab('saved')">Saved</button>
+</div>
+
+<div id="createdSession" class="content-session">
+    <div class="masonry-grid">
+        {% for pin in created_pins %}
+        <div class="pin-card">
+            <a href="{% url 'pins:pin_detail' pin.id %}">
+                <img src="{{ pin.image.url }}" alt="{{ pin.title }}">
+            </a>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>You haven't uploaded any pins yet.</p>
+            {% if request.user == user %}
+            <a href="{% url 'pins:pin_create' %}" class="btn-primary">Upload Pin</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="savedSession" class="content-session" style="display: none;">
+    {% if boards %}
+    <div class="boards-grid">
+        {% for board in boards %}
+        <div class="board-card">
+            <a href="{% url 'boards:board_detail' board.id %}">
+                <div class="board-preview">
+                    {% with board_pins=board.pins.all|slice:":3" %}
+                    {% if board_pins.0 %}
+                    <div
+                        style="grid-row: span 2; background-image: url('{{ board_pins.0.image.url }}'); background-size: cover; background-position: center;">
+                    </div>
+                    {% else %}
+                    <div style="grid-row: span 2; background: #eee;"></div>
+                    {% endif %}
+
+                    {% if board_pins.1 %}
+                    <div
+                        style="background-image: url('{{ board_pins.1.image.url }}'); background-size: cover; background-position: center;">
+                    </div>
+                    {% else %}
+                    <div style="background: #e5e5e5;"></div>
+                    {% endif %}
+
+                    {% if board_pins.2 %}
+                    <div
+                        style="background-image: url('{{ board_pins.2.image.url }}'); background-size: cover; background-position: center;">
+                    </div>
+                    {% else %}
+                    <div style="background: #e0e0e0;"></div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="board-info">
+                    <h3>{{ board.name }}</h3>
+                    <p>{{ board.pins.count }} pins</p>
+                </div>
+            </a>
+            {% if request.user == user %}
+            <div class="board-actions">
+                <a href="{% url 'boards:board_edit' board.id %}" class="btn-icon" style="background: white;"><i
+                        class="fas fa-edit"></i></a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <div class="masonry-grid">
+        {% for pin in saved_pins %}
+        <div class="pin-card">
+            <a href="{% url 'pins:pin_detail' pin.id %}">
+                <img src="{{ pin.image.url }}" alt="{{ pin.title }}">
+            </a>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>You haven't saved any pins from the web yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        const createdSession = document.getElementById('createdSession');
+        const savedSession = document.getElementById('savedSession');
+        const tabs = document.querySelectorAll('.tab');
+
+        if (tabName === 'created') {
+            createdSession.style.display = 'block';
+            savedSession.style.display = 'none';
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            createdSession.style.display = 'none';
+            savedSession.style.display = 'block';
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
+        }
+    }
+
+    function copyProfileLink() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert("Profile link copied to clipboard!");
+        });
+    }
+
+    // Add hover effect for board cards
+    document.querySelectorAll('.board-card').forEach(card => {
+        card.onmouseover = () => { if (card.querySelector('.board-actions')) card.querySelector('.board-actions').style.opacity = '1'; };
+        card.onmouseout = () => { if (card.querySelector('.board-actions')) card.querySelector('.board-actions').style.opacity = '0'; };
+    });
+</script>
+
+
 {% endblock %}

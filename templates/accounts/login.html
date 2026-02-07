@@ -1,64 +1,25 @@
-{% extends 'base/base.html' %}
-
-{% load static %}
-
-{% block title %}Login - Pinterest Clone{% endblock %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container auth-container">
+<div class="auth-wrapper">
     <div class="auth-card">
-        <div class="auth-header">
-            <h1>Welcome Back</h1>
-            <p>Sign in to your Pinterest account</p>
+        <div class="logo-center">
+            <i class="fas fa-layer-group fa-3x" style="color: #e60023;"></i>
         </div>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                    <button type="button" class="close">&times;</button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="POST" class="auth-form">
+        <h2>Log in to Pinterest</h2>
+        <form method="post">
             {% csrf_token %}
-
+            {% for field in form %}
             <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Username or Email</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="form-error">
-                        {% for error in form.username.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-text">{{ field.errors }}</div>
                 {% endif %}
             </div>
-
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">Password</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    <div class="form-error">
-                        {% for error in form.password.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            {% endfor %}
+            <button type="submit" class="btn-primary full-width">Log in</button>
         </form>
-
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="{% url 'accounts:signup' %}">Create one</a></p>
-            <p><a href="#">Forgot password?</a></p>
-        </div>
+        <p class="auth-footer">Not on Pinterest yet? <a href="{% url 'accounts:signup' %}">Sign up</a></p>
     </div>
 </div>
 {% endblock %}

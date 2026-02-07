@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="create-pin-wrapper">
+    <div class="create-pin-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="create-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                <h2 style="font-size: 32px;">Create Pin</h2>
+                <button type="submit" class="btn-primary">Save Pin</button>
+            </div>
+
+            <div class="create-body">
+                <div class="upload-section" onclick="document.getElementById('id_image').click()"
+                    style="cursor: pointer;">
+                    <div class="upload-box-wrapper" id="uploadBox">
+                        <div class="upload-instruction" id="uploadInstruction">
+                            <i class="fas fa-arrow-circle-up"></i>
+                            <p style="font-weight: 700; margin-top: 12px; color: #111;">Click to upload</p>
+                            <p style="font-size: 14px; margin-top: 8px;">Recommendation: High quality .jpg files less
+                                than 20MB</p>
+                        </div>
+                        <img id="imagePreview"
+                            style="display: none; max-width: 100%; max-height: 100%; border-radius: 12px; object-fit: contain;">
+                        <div style="display: none;">{{ form.image }}</div>
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <div class="form-group">
+                        <label>Title</label>
+                        {{ form.title }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Link (URL)</label>
+                        {{ form.link }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Board</label>
+                        {{ form.board }}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <script>
+            document.getElementById('id_image').onchange = function (evt) {
+                const [file] = this.files;
+                if (file) {
+                    const preview = document.getElementById('imagePreview');
+                    const instruction = document.getElementById('uploadInstruction');
+                    preview.src = URL.createObjectURL(file);
+                    preview.style.display = 'block';
+                    instruction.style.display = 'none';
+                    document.getElementById('uploadBox').style.background = 'white';
+                    document.getElementById('uploadBox').style.borderStyle = 'solid';
+                }
+            };
+        </script>
+    </div>
+</div>
+{% endblock %}

@@ -17,7 +17,7 @@ def signup_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Account created successfully!')
-            return redirect('profile')
+            return redirect('accounts:profile')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -31,7 +31,7 @@ def signup_view(request):
 def login_view(request):
     """Handle user login"""
     if request.user.is_authenticated:
-        return redirect('profile')
+        return redirect('accounts:profile')
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -65,5 +65,46 @@ def logout_view(request):
 def profile_view(request):
     """Display user profile"""
     user = request.user
-    return render(request, 'accounts/profile.html', {'user': user})
+    created_pins = user.pins.filter(is_uploaded=True).order_by('-created_at')
+    saved_pins = user.pins.filter(is_uploaded=False).order_by('-created_at')
+    boards = user.boards.all().order_by('-created_at')
+    
+    return render(request, 'accounts/profile.html', {
+        'user': user,
+        'created_pins': created_pins,
+        'saved_pins': saved_pins,
+        'boards': boards
+    })
 
+@login_required(login_url='accounts:login')
+def profile_edit(request):
+    """Edit user profile"""
+    if request.method == 'POST':
+        user = request.user
+        
+        # Update basic fields
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.bio = request.POST.get('bio', '')
+        user.website = request.POST.get('website', '')
+        
+        # Handle profile picture upload
+        if 'profile_image' in request.FILES:
+            user.profile_image = request.FILES['profile_image']
+        
+        user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('accounts:profile')
+    
+    return render(request, 'accounts/profile_edit.html', {'user': request.user})
+@login_required(login_url='accounts:login')
+def profile_delete(request):
+    """Delete user profile"""
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        logout(request)
+        messages.success(request, 'Your account has been permanently deleted.')
+        return redirect('core:home')
+    
+    return render(request, 'accounts/profile_confirm_delete.html')

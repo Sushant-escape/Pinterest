@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="pin-back-overlay" onclick="history.back()"></div>
+<div class="pin-detail-wrapper">
+    <div class="pin-detail-card">
+        <div class="pin-media">
+            <img src="{{ pin.image.url }}" alt="{{ pin.title }}">
+        </div>
+        <div class="pin-info-panel">
+            <div class="pin-header-actions">
+                <div class="action-buttons">
+                    <div class="dropdown">
+                        <button class="btn-icon" id="pinActionMenu"><i class="fas fa-ellipsis-h"></i></button>
+                        <div class="dropdown-content" id="pinActionDropdown">
+                            {% if request.user == pin.user %}
+                            <a href="{% url 'pins:pin_edit' pin.id %}"><i class="fas fa-edit"></i> Edit Pin</a>
+                            <a href="{% url 'pins:pin_delete' pin.id %}" style="color: #e60023;"><i
+                                    class="fas fa-trash"></i> Delete Pin</a>
+                            {% endif %}
+                            <a href="#" onclick="copyPinLink(event)"><i class="fas fa-share-alt"></i> Share Pin</a>
+                        </div>
+                    </div>
+                    <a href="{{ pin.image.url }}" download="{{ pin.title|default:'pin' }}.jpg" class="btn-icon"
+                        title="Download Image" style="display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+                {% if request.user.is_authenticated %}
+                <button class="btn-save btn-red" onclick="savePin('{{ pin.id }}')">Save</button>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn-save btn-red">Save</a>
+                {% endif %}
+            </div>
+
+            {% if pin.link %}
+            <a href="{{ pin.link }}" target="_blank" class="pin-link"><i class="fas fa-link"></i> {{
+                pin.link|truncatechars:30 }}</a>
+            {% endif %}
+
+            <h1 class="pin-title">{{ pin.title|default:"Untitled Pin" }}</h1>
+            <p class="pin-desc">{{ pin.description|default:"No description provided." }}</p>
+
+            <div class="creator-row">
+                <a href="{% url 'accounts:profile' %}" class="creator-link">
+                    {% if pin.user.profile_image %}
+                    <img src="{{ pin.user.profile_image.url }}" class="user-avatar">
+                    {% else %}
+                    <div class="avatar-placeholder-small"
+                        style="width: 48px; height: 48px; background: #efefef; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        {{ pin.user.username.0|upper }}
+                    </div>
+                    {% endif %}
+                    <div class="creator-details">
+                        <span class="creator-name">{{ pin.user.username }}</span>
+                        <span class="follower-count">0 followers</span>
+                    </div>
+                </a>
+                {% if request.user != pin.user %}
+                <button class="btn-secondary" onclick="toggleFollow(this)">Follow</button>
+                {% endif %}
+            </div>
+
+            <div class="comments-section">
+                <h4>Comments</h4>
+                <div class="comment-input-row" style="margin-top: 15px;">
+                    <p class="text-muted" style="color: #666; font-style: italic;">Sharing ideas is better with
+                        comments. (Coming soon!)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyPinLink(e) {
+        if (e) e.preventDefault();
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert("Pin link copied to clipboard!");
+        });
+    }
+
+    function savePin(pinId) {
+        // Placeholder for save logic
+        alert("Pin saved to your profile!");
+    }
+
+    function toggleFollow(btn) {
+        if (btn.textContent === 'Follow') {
+            btn.textContent = 'Following';
+            btn.style.background = '#333';
+            btn.style.color = 'white';
+        } else {
+            btn.textContent = 'Follow';
+            btn.style.background = '#efefef';
+            btn.style.color = 'black';
+        }
+    }
+
+    // Dropdown toggle
+    const menuBtn = document.getElementById('pinActionMenu');
+    const dropdown = document.getElementById('pinActionDropdown');
+
+    if (menuBtn) {
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        };
+    }
+
+    window.onclick = (e) => {
+        if (dropdown && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    };
+</script>
+
+<style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 200px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        border-radius: 16px;
+        padding: 8px;
+        right: 0;
+        top: 50px;
+        border: 1px solid #efefef;
+        animation: dropdownIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes dropdownIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .dropdown-content.show {
+        display: block;
+    }
+
+    .dropdown-content a {
+        color: #111;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 8px;
+        transition: background 0.2s;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .dropdown-content i {
+        font-size: 18px;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Fix clipping issues */
+    .pin-info-panel,
+    .pin-detail-card,
+    .pin-detail-wrapper {
+        overflow: visible !important;
+    }
+</style>
+{% endblock %}

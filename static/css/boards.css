@@ -1,1 +1,87 @@
 /* Boards Page Styles */
+
+.board-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 16px;
+    text-align: center;
+    background-color: white;
+}
+
+.board-name {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+    color: #111;
+}
+
+.board-desc {
+    font-size: 18px;
+    color: #111;
+    margin-bottom: 32px;
+    max-width: 650px;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.boards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 0 24px;
+}
+
+.board-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background: #f0f0f0;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+.board-card:hover {
+    transform: scale(0.98);
+}
+
+.board-preview {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    height: 180px;
+    background: #ddd;
+}
+
+.board-info {
+    padding: 16px;
+}
+
+.board-info h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.board-info p {
+    margin: 4px 0 0;
+    color: #767676;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.board-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.board-card:hover .board-actions {
+    opacity: 1;
+}
